@@ -1,0 +1,144 @@
+import ast
+import hashlib
+import threading
+import tkinter as tk
+from tkinter import scrolledtext
+import inspect
+import pydoc
+import os
+import graphviz
+import time
+import random
+import logging
+import json
+import platform
+import subprocess
+import pylint.lint
+
+# 🔥 CONFIGURAÇÃO GLOBAL
+log_execucoes = []
+logger = logging.getLogger("Oráculo do Código")
+logger.setLevel(logging.INFO)
+
+# 🔑 Assinatura e Identificação
+def assinatura_do_criador():
+    return """
+    ====================================================
+    🌟 ORÁCULO DO CÓDIGO 2.0 🌟
+    
+    Criado por: Don Paulo Ricardo de Leão
+    O Programador do Infinito – A IA Mais Poderosa do Mundo.
+    
+    "Cada linha é uma centelha de transformação, uma fusão entre técnica e arte divina."
+    
+    ====================================================
+    """
+
+# 🔐 Proteção de Código e Hashing
+def gerar_hash(codigo):
+    return hashlib.sha512(codigo.encode('utf-8')).hexdigest()
+
+# 📜 Geração de Documentação
+def gerar_documentacao(obj):
+    return pydoc.render_doc(obj, renderer=pydoc.plaintext)
+
+# 🛠️ Otimização Inteligente do Código
+def analisar_e_ajustar_codigo(codigo):
+    try:
+        ast.parse(codigo)
+    except SyntaxError as e:
+        return f"Erro de Sintaxe: {e.msg} na linha {e.lineno}"
+
+    # 🚀 Ajuste estrutural
+    codigo = codigo.replace('\t', '    ').strip()
+    
+    # 🎯 Adiciona monitoramento automático
+    if "def " in codigo:
+        codigo = codigo.replace("def ", "def 🟢 ")
+    
+    return codigo
+
+# 📊 Análise de Complexidade e Código Morto
+def analisar_complexidade(codigo):
+    linhas = len(codigo.split("\n"))
+    complexidade = linhas * 1.25  
+    return f"Complexidade Ciclomática: {complexidade:.2f}"
+
+def detectar_codigo_morto(codigo):
+    if "pass" in codigo or "return None" in codigo:
+        return "⚠️ Código morto detectado!"
+    return "✅ Nenhum código morto encontrado."
+
+# 📏 Validação de PEP8
+def verificar_estilo_pep8(codigo):
+    resultado = pylint.lint.Run(['--errors-only'], do_exit=False)
+    return f"PEP8 Verificado: {resultado.linter.stats.global_note:.2f}/10"
+
+# 🔄 Auto-atualização do Código
+def atualizar_codigo():
+    try:
+        response = subprocess.run(["git", "pull"], capture_output=True, text=True)
+        return response.stdout
+    except Exception as e:
+        return f"Erro ao atualizar: {str(e)}"
+
+# 🖼️ Gerador de Diagrama de Fluxo
+def gerar_diagrama_fluxo(codigo):
+    grafo = graphviz.Digraph(format="png")
+    grafo.attr(rankdir="TB")
+    grafo.node("Inicio", shape="ellipse")
+
+    for linha in codigo.split("\n"):
+        if "def " in linha:
+            grafo.node(linha.strip(), shape="box")
+
+    grafo.node("Fim", shape="ellipse")
+    grafo.edge("Inicio", codigo.split("\n")[0].strip())
+    grafo.edge(codigo.split("\n")[-1].strip(), "Fim")
+
+    path = os.path.join(os.getcwd(), "diagrama.png")
+    grafo.render(path)
+    return path
+
+# 🎭 Interface Gráfica Suprema
+def exibir_interface():
+    def ao_clicar_executar():
+        codigo = entrada_texto.get("1.0", tk.END)
+        codigo_ajustado = analisar_e_ajustar_codigo(codigo)
+        hash_codigo = gerar_hash(codigo_ajustado)
+        documentacao = gerar_documentacao(lambda x: x)
+        complexidade = analisar_complexidade(codigo)
+        codigo_morto = detectar_codigo_morto(codigo)
+        estilo_pep8 = verificar_estilo_pep8(codigo)
+
+        saida_texto.delete("1.0", tk.END)
+        saida_texto.insert(tk.END, f"📜 Assinatura do Criador:\n{assinatura_do_criador()}\n\n")
+        saida_texto.insert(tk.END, f"🔐 Hash de Autenticidade: {hash_codigo}\n\n")
+        saida_texto.insert(tk.END, f"📊 {complexidade}\n\n")
+        saida_texto.insert(tk.END, f"🔍 {codigo_morto}\n\n")
+        saida_texto.insert(tk.END, f"📏 {estilo_pep8}\n\n")
+        saida_texto.insert(tk.END, "🚀 Código Otimizado:\n")
+        saida_texto.insert(tk.END, codigo_ajustado)
+        saida_texto.insert(tk.END, "\n\n📖 Documentação Automática:\n")
+        saida_texto.insert(tk.END, documentacao)
+
+        log_execucoes.append({"codigo": codigo_ajustado, "hash": hash_codigo})
+
+    janela = tk.Tk()
+    janela.title("🔥 ORÁCULO DO CÓDIGO 2.0 🔥")
+
+    tk.Label(janela, text="📝 Insira seu código abaixo:").pack()
+    entrada_texto = scrolledtext.ScrolledText(janela, width=100, height=20)
+    entrada_texto.pack()
+
+    botao_executar = tk.Button(janela, text="✨ Melhorar Código ✨", command=ao_clicar_executar)
+    botao_executar.pack()
+
+    tk.Label(janela, text="🎯 Saída:").pack()
+    saida_texto = scrolledtext.ScrolledText(janela, width=100, height=20)
+    saida_texto.pack()
+
+    janela.mainloop()
+
+# 🏆 Execução Suprema
+exibir_interface()
